@@ -36,4 +36,21 @@ public class HomeController {
 		return "home";
 	}
 	
+	@RequestMapping(value = "/test", method = RequestMethod.GET)
+	public String test(Model model) {
+	    String greetings = "Greetings, Spring MVC!";
+	    model.addAttribute("message", greetings);
+	 
+	    return "test";
+	}
+	
+	
+	@RequestMapping(value = "**", method = RequestMethod.GET)
+	public String notFound(Model model) {
+	    String greetings = "Uh-oh, something went wrong.";
+	    model.addAttribute("message", greetings);
+	 
+	    return "notFound";
+	}
+
 }

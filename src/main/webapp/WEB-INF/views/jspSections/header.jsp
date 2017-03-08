@@ -4,7 +4,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-	<title>Joel M Wood</title>
+	<!-- <title>Joel M Wood</title>-->
   	<meta name="viewport" content="width=device-width, initial-scale=1.0">
   	<spring:url value="resources/css/styles.css" var="coreCss" />
 	<link href="${coreCss}" rel="stylesheet" />
@@ -17,9 +17,9 @@
  	<div class="main-nav">
         <ul class="nav">
           <li class="name">Joel M Wood</li>
-          <li><a href="#">Home</a></li>
-          <li><a href="#">Experience</a></li>
-          <li><a href="#">Photos</a></li>
-          <li><a href="#">Contact</a></li>
+          <li><a href="/">Home</a></li>
+          <li><a href="/experience">Experience</a></li>
+          <li><a href="/samples">Samples</a></li>
+          <li><a href="/contact">Contact</a></li>
         </ul>
 	</div>

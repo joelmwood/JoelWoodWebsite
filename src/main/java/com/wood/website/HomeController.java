@@ -139,7 +139,7 @@ public class HomeController {
 	
 	
 
-	@RequestMapping(method = RequestMethod.POST)
+	@RequestMapping(method = RequestMethod.POST, params = "submit")	
 	public String submit(Model model, @ModelAttribute("loginBean") LoginBean loginBean, HttpServletResponse response, HttpServletRequest request){
 //		logger.info(loginBean.getUserName());
 //		logger.info(loginBean.getPassword());
@@ -177,6 +177,10 @@ public class HomeController {
 			return "login";
 		}
 	}
+	@RequestMapping(method = RequestMethod.POST, params = "signup")	
+	public String signup(Model model, @ModelAttribute("loginBean") LoginBean loginBean, HttpServletResponse response, HttpServletRequest request){
+		model.addAttribute("error", "Unfortunately, sign up is currently disabled.");
+		return "login";	}
 	
 //	private void setCookie(HttpServletResponse response, String sessionID) {
 //		// TODO Auto-generated method stub

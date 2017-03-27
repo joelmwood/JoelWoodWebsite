@@ -30,7 +30,7 @@ ${message}
                 </tr>
                 <tr>
                     <td></td>
-                    <td><input type="submit" value="Submit" /> <button type="reset" value="Reset">Reset</button></td>
+                    <td><input type="submit" value="Submit" name="submit"/> <button type="reset" value="Reset">Reset</button></td>
                 </tr>
             </table>
             <div style="color: red">${error}</div>
@@ -44,19 +44,19 @@ ${message}
             <table>
                 <tr>
                     <td>User Name</td>
-                    <td><input type="text" name="userName" placeholder="username"/></td>
+                    <td><input type="text" name="userName" placeholder="Currently disabled"/></td>
                 </tr>
                 <tr>
                     <td>Password</td>
-                    <td><input type="password" name="password" placeholder="password"/></td>
+                    <td><input type="password" name="password" placeholder="Currently disabled"/></td>
                 </tr>
                 <tr>
                     <td>Repeat Password</td>
-                    <td><input type="repeatPassword" name="repeatPassword" placeholder="repeat password"/></td>
+                    <td><input type="repeatPassword" name="repeatPassword" placeholder="Currently disabled"/></td>
                 </tr>
                 <tr>
                     <td></td>
-                    <td><input type="submit" value="Submit" /> <button type="reset" value="Reset">Reset</button></td>
+                    <td><input type="submit" value="Submit" name="signup"/> <button type="reset" value="Reset">Reset</button></td>
                 </tr>
             </table>
             <div style="color: red">${error}</div>

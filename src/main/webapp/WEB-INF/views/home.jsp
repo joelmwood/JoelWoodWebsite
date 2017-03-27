@@ -1,8 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ page session="false" %>
 <%@include file="jspSections/header.jsp" %>
 <head><title>Joel M Wood</title></head>
-<header>
+<header class="home">
       <img src="resources/images/me.png" alt="Picture of Joel" class="profile-image">
       <h1 class="tag name">Hello, I&#39m Joel.</h1>
       <p class="tag location">I live and work near Memphis, TN.</p>

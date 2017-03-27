@@ -26,5 +26,6 @@
 	</beans:bean>
 	
 	<context:component-scan base-package="com.wood.website" />
+	<context:component-scan base-package="com.wood.controller" />
 	
 </beans:beans>

@@ -186,6 +186,7 @@ a.social:hover {
       justify-content: space-around;
       margin: 0 auto;
   }
+  
 
   header {
     min-height: 450px;
@@ -203,6 +204,8 @@ a.social:hover {
 
   main {
     padding-top: 50px;
+    margin: auto;
+    max-width:400;
   }
 
   main p {

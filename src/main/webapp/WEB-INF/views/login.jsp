@@ -8,7 +8,7 @@
 <%@include file="jspSections/header.jsp" %>
 <head><title>Login</title></head>
 <br/><br/><br/><br/>
-
+<main class="flexLogin">
 <div class="tab">
 	
   <button class="tablinks" onclick="openCity(event, 'Login')" id="defaultOpen">Log In</button>
@@ -30,7 +30,7 @@ ${message}
                 </tr>
                 <tr>
                     <td></td>
-                    <td><input type="submit" value="Submit" /></td>
+                    <td><input type="submit" value="Submit" /> <button type="reset" value="Reset">Reset</button></td>
                 </tr>
             </table>
             <div style="color: red">${error}</div>
@@ -56,7 +56,7 @@ ${message}
                 </tr>
                 <tr>
                     <td></td>
-                    <td><input type="submit" value="Submit" /></td>
+                    <td><input type="submit" value="Submit" /> <button type="reset" value="Reset">Reset</button></td>
                 </tr>
             </table>
             <div style="color: red">${error}</div>
@@ -69,5 +69,6 @@ ${message}
 	//Get the element with id="defaultOpen" and click on it
 	document.getElementById("defaultOpen").click();
 </script>
+</main>
 <%@include file="jspSections/footer.jsp" %>
 

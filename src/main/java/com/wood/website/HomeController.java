@@ -1,6 +1,7 @@
 package com.wood.website;
 
 import java.io.IOException;
+import java.sql.*;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -179,8 +180,26 @@ public class HomeController {
 	}
 	@RequestMapping(method = RequestMethod.POST, params = "signup")	
 	public String signup(Model model, @ModelAttribute("loginBean") LoginBean loginBean, HttpServletResponse response, HttpServletRequest request){
-		model.addAttribute("error", "Unfortunately, sign up is currently disabled.");
-		return "login";	}
+		//model.addAttribute("error", "Unfortunately, sign up is currently disabled.");
+		
+		try{  
+			//Class.forName("com.mysql.jdbc.Driver");
+			Class.forName("com.mysql.cj.jdbc.Driver"); 
+			Connection con=DriverManager.getConnection(  
+			"jdbc:mysql://localhost:3306/users","root","root");  
+			//here users is database name, root is username and password  
+			Statement stmt=con.createStatement();  
+			ResultSet rs=stmt.executeQuery("select ID, Username, Password from user");  
+			while(rs.next())  
+				System.out.println(rs.getInt(1)+"  "+rs.getString(2)+"  "+rs.getString(3));
+				model.addAttribute("table", "testMessage");
+				con.close();  
+			}catch(Exception e){ System.out.println(e);
+			
+			}	
+		
+		return "login";		
+	}
 	
 //	private void setCookie(HttpServletResponse response, String sessionID) {
 //		// TODO Auto-generated method stub

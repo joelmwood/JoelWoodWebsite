@@ -1,4 +1,10 @@
 /* Style the tab */
+#LoginTab{
+	margin:auto;
+	max-width:400;
+}
+
+
 div.tab {
     overflow: hidden;
     border: 1px solid #ccc;

@@ -24,6 +24,7 @@ a:hover {
 
 /* Section Styles */
 
+
 .main-nav {
   width: 100%;
   background: black;
@@ -204,9 +205,10 @@ a.social:hover {
 
   main {
     padding-top: 50px;
-    margin: auto;
-    max-width:400;
+    /*margin: auto;
+    max-width:400;*/
   }
+  
 
   main p {
     line-height: 1.6em;

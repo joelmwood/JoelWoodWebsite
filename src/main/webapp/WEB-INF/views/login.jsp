@@ -8,7 +8,8 @@
 <%@include file="jspSections/header.jsp" %>
 <head><title>Login</title></head>
 <br/><br/><br/><br/>
-<main class="flexLogin">
+<main>
+<div id="LoginTab" >
 <div class="tab">
 	
   <button class="tablinks" onclick="openCity(event, 'Login')" id="defaultOpen">Log In</button>
@@ -69,6 +70,8 @@ ${message}
 	//Get the element with id="defaultOpen" and click on it
 	document.getElementById("defaultOpen").click();
 </script>
+</div>
+${table}
 </main>
 <%@include file="jspSections/footer.jsp" %>
 

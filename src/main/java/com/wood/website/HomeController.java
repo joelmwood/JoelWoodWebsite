@@ -181,23 +181,33 @@ public class HomeController {
 	@RequestMapping(method = RequestMethod.POST, params = "signup")	
 	public String signup(Model model, @ModelAttribute("loginBean") LoginBean loginBean, HttpServletResponse response, HttpServletRequest request){
 		//model.addAttribute("error", "Unfortunately, sign up is currently disabled.");
-		
+		String greeting= "";
+		String apos = "'";
+		String un = apos + loginBean.getUserName() + apos;
+		//Apos is just prep for SQL statement
+		String pw = loginBean.getPassword();
 		try{  
 			//Class.forName("com.mysql.jdbc.Driver");
 			Class.forName("com.mysql.cj.jdbc.Driver"); 
 			Connection con=DriverManager.getConnection(  
 			"jdbc:mysql://localhost:3306/users","root","root");  
 			//here users is database name, root is username and password  
-			Statement stmt=con.createStatement();  
-			ResultSet rs=stmt.executeQuery("select ID, Username, Password from user");  
-			while(rs.next())  
-				System.out.println(rs.getInt(1)+"  "+rs.getString(2)+"  "+rs.getString(3));
-				model.addAttribute("table", "testMessage");
+			Statement stmt=con.createStatement(); 			
+			ResultSet rs=stmt.executeQuery("SELECT Password FROM User WHERE Username=("+un+")");			
+			while(rs.next()) { 
+				System.out.println(rs.getString(1));
+				if(pw.equals(rs.getString(1))){
+					greeting =  "Good Username/Password!";
+				}else{
+					greeting =  "Bad Username/Password!";
+				}
+			}
 				con.close();  
 			}catch(Exception e){ System.out.println(e);
 			
 			}	
 		
+		model.addAttribute("table", greeting);
 		return "login";		
 	}
 	

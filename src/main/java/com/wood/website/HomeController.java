@@ -1,5 +1,7 @@
 package com.wood.website;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.io.IOException;
 import java.sql.*;
 import java.text.DateFormat;
@@ -147,68 +149,86 @@ public class HomeController {
 		if(loginBean.getUserName() == "" || loginBean.getUserName() == " " || loginBean.getPassword() == "" || loginBean.getPassword() == " "){
 			model.addAttribute("error", "Please Enter Details");
 			return "login";
-		}
-		if (loginBean != null && loginBean.getUserName() != null && loginBean.getPassword() != null) {
-			if (loginBean.getUserName().equals("test1") && loginBean.getPassword().equals("test1")) {
-				//model.addAttribute("message",  "Welcome, " + loginBean.getUserName()+ ". ") ;
-				//((HttpServletRequest) request).getSession().setAttribute("loggedInUser", loginBean.getUserName());
-				HttpSession session = request.getSession();
-				session.invalidate();
-				session = request.getSession();
-				session.setAttribute("userID", loginBean.getUserName());
-				temp = loginBean.getUserName();
-				setCookie(response, session.getAttribute("userID").toString());
-				loginLogout = "Logout";
-				try {
-					setLoginHyperLink(response, request, loginLogout);
-				} catch (ServletException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+		}else{
+			if (loginBean != null && loginBean.getUserName() != null && loginBean.getPassword() != null) {
+				if (loginBean.getUserName().equals("test1") && loginBean.getPassword().equals("test1")) {
+					//model.addAttribute("message",  "Welcome, " + loginBean.getUserName()+ ". ") ;
+					//((HttpServletRequest) request).getSession().setAttribute("loggedInUser", loginBean.getUserName());
+					HttpSession session = request.getSession();
+					session.invalidate();
+					session = request.getSession();
+					session.setAttribute("userID", loginBean.getUserName());
+					temp = loginBean.getUserName();
+					setCookie(response, session.getAttribute("userID").toString());
+					loginLogout = "Logout";
+					try {
+						setLoginHyperLink(response, request, loginLogout);
+					} catch (ServletException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					//String greetings = "Welcome to Samples, " + temp + "! ";
+				    model.addAttribute("message", "Welcome to Samples, " + temp + "! ");
+	//				return "redirect:samples";	
+					return "samples";
+				} else {
+					model.addAttribute("error", "Invalid Details");
+					return "login";
 				}
-				//String greetings = "Welcome to Samples, " + temp + "! ";
-			    model.addAttribute("message", "Welcome to Samples, " + temp + "! ");
-//				return "redirect:samples";	
-				return "samples";
 			} else {
-				model.addAttribute("error", "Invalid Details");
+				model.addAttribute("error", "Please Enter Details");
 				return "login";
 			}
-		} else {
-			model.addAttribute("error", "Please Enter Details");
-			return "login";
 		}
 	}
 	@RequestMapping(method = RequestMethod.POST, params = "signup")	
 	public String signup(Model model, @ModelAttribute("loginBean") LoginBean loginBean, HttpServletResponse response, HttpServletRequest request){
-		//model.addAttribute("error", "Unfortunately, sign up is currently disabled.");
-		String greeting= "";
-		String apos = "'";
-		String un = apos + loginBean.getUserName() + apos;
-		//Apos is just prep for SQL statement
-		String pw = loginBean.getPassword();
-		try{  
-			//Class.forName("com.mysql.jdbc.Driver");
-			Class.forName("com.mysql.cj.jdbc.Driver"); 
-			Connection con=DriverManager.getConnection(  
-			"jdbc:mysql://localhost:3306/users","root","root");  
-			//here users is database name, root is username and password  
-			Statement stmt=con.createStatement(); 			
-			ResultSet rs=stmt.executeQuery("SELECT Password FROM User WHERE Username=("+un+")");			
-			while(rs.next()) { 
-				System.out.println(rs.getString(1));
-				if(pw.equals(rs.getString(1))){
-					greeting =  "Good Username/Password!";
-				}else{
-					greeting =  "Bad Username/Password!";
+		if(loginBean.getUserName() == "" || loginBean.getUserName() == " " || loginBean.getPassword() == "" || loginBean.getPassword() == " "){
+			model.addAttribute("error", "Please Enter Details");
+			return "login";	
+		}else{
+			//model.addAttribute("error", "Unfortunately, sign up is currently disabled.");
+			String greeting= "";
+			String apos = "'";
+			String un = apos + loginBean.getUserName() + apos;
+			//Apos is just prep for SQL statement
+			String pw = loginBean.getPassword();
+			try{  
+				//Class.forName("com.mysql.jdbc.Driver");
+				Class.forName("com.mysql.cj.jdbc.Driver"); 
+				Connection con=DriverManager.getConnection(  
+				"jdbc:mysql://localhost:3306/users","root","root");  
+				//here users is database name, root is username and password  
+				Statement stmt=con.createStatement(); 			
+				ResultSet rs=stmt.executeQuery("SELECT Password FROM User WHERE Username=("+un+")");			
+				while(rs.next()) { 
+					System.out.println(rs.getString(1));
+					if(pw.equals(rs.getString(1))){
+						greeting =  "Good Username/Password!";
+					}else{
+						greeting =  "Bad Username/Password!";
+					}
 				}
+					con.close();  
+				}catch(Exception e){ 
+					System.out.println(e);
+				
+				}				
+
+			MessageDigest messageDigest;
+			try {
+				messageDigest = MessageDigest.getInstance("SHA-256");
+				messageDigest.update(pw.getBytes());
+				String encryptedPW = new String(messageDigest.digest());
+				pw = encryptedPW;
+			} catch (NoSuchAlgorithmException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-				con.close();  
-			}catch(Exception e){ System.out.println(e);
 			
-			}	
-		
-		model.addAttribute("table", greeting);
-		return "login";		
+			model.addAttribute("table", pw);
+			return "login";	
+		}
 	}
 	
 //	private void setCookie(HttpServletResponse response, String sessionID) {

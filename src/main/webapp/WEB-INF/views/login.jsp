@@ -8,30 +8,31 @@
 <%@include file="jspSections/header.jsp" %>
 <head><title>Login</title></head>
 <br/><br/><br/><br/>
+
 <main>
 <div id="LoginTab" >
 <div class="tab">
 	
-  <button class="tablinks" onclick="openCity(event, 'Login')" id="defaultOpen">Log In</button>
-  <button class="tablinks" onclick="openCity(event, 'Signup')">Sign Up</button>
+  <button class="tablinks" onclick="openCity(event, 'Login');resetForm();" id="defaultOpen">Log In</button>
+  <button class="tablinks" onclick="openCity(event, 'Signup');resetForm();">Sign Up</button>
 </div>
 
 <div id="Login" class="tabcontent">
 ${message}
-  <form:form name="submitForm" method="POST">
+  <form:form name="submitForm" id="submitForm" method="POST">
         <div align="center">
             <table>
                 <tr>
-                    <td>User Name</td>
-                    <td><input type="text" name="userName" placeholder="username"/></td>
+                    <td>Email</td>
+                    <td><input type="email" name="userName" placeholder="janedoe@email.com" required/></td>
                 </tr>
                 <tr>
                     <td>Password</td>
-                    <td><input type="password" name="password" placeholder="password"/></td>
+                    <td><input type="password" name="password" placeholder="password" required/></td>
                 </tr>
                 <tr>
                     <td></td>
-                    <td><input type="submit" value="Submit" name="submit"/> <button type="reset" value="Reset">Reset</button></td>
+                    <td><input type="submit" value="Submit" name="submit"/> <button type="reset" value="Reset" id="resetLogin">Reset</button></td>
                 </tr>
             </table>
             <div style="color: red">${error}</div>
@@ -40,36 +41,41 @@ ${message}
 </div>
 
 <div id="Signup" class="tabcontent">
-   <form:form name="submitForm" method="POST">
+   <form:form name="submitForm" id="signupForm" method="POST" onsubmit="return checkPasswordsMatch()">
         <div align="center">
             <table>
                 <tr>
-                    <td>User Name</td>
-                    <td><input type="text" name="userName" placeholder="Currently disabled"/></td>
+                    <td>Email</td>
+                    <td><input type="email" name="userName" placeholder="janedoe@email.com" required/></td>
                 </tr>
                 <tr>
                     <td>Password</td>
-                    <td><input type="password" name="password" placeholder="Currently disabled"/></td>
+                    <td><input id="newPassword" type="password" name="password"  placeholder="password" required pattern="^([a-zA-Z0-9!@#$%^&*]{8,20})$"  title="One Uppercase character, one lowercase character, one of these special characters (i.e. !@#$%^&*) and one number." "/></td>
                 </tr>
                 <tr>
                     <td>Repeat Password</td>
-                    <td><input type="repeatPassword" name="repeatPassword" placeholder="Currently disabled"/></td>
+                    <td><input id="confirmPassword" type="password" name="repeatPassword" placeholder="repeat password" required pattern="^([a-zA-Z0-9!@#$%^&*]{8,20})$" title="One Uppercase character, one lowercase character, one of these special characters (i.e. !@#$%^&*) and one number." onkeyup="checkPasswordsMatch()"/>
+                    	<br/><span id="passwordsMatch" style="color:red; font-size:12"></span>
+                    </td>
                 </tr>
                 <tr>
                     <td></td>
-                    <td><input type="submit" value="Submit" name="signup"/> <button type="reset" value="Reset">Reset</button></td>
+                    <td><input id="signupButton" type="submit" value="Submit" name="signup"/> <button type="reset" value="Reset" id="resetSignup">Reset</button></td>
                 </tr>
             </table>
+            <p id="passwordsMatch"></p>
             <div style="color: red">${error}</div>
         </div>
    </form:form>
 </div>
 
 
+
 <script>
 	//Get the element with id="defaultOpen" and click on it
 	document.getElementById("defaultOpen").click();
 </script>
+
 </div>
 ${table}
 </main>

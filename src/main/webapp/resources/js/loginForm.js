@@ -1,7 +1,27 @@
 /**
  * 
  */
+function checkPasswordsMatch(){
+	var pass1 = document.getElementById("newPassword").value;
+	var pass2 = document.getElementById("confirmPassword").value;
+	
+	if(pass1 != pass2){
+		document.getElementById("passwordsMatch").innerHTML = "Passwords do not Match.";
+		document.getElementById("newPassword").style.borderColor = "red";
+		document.getElementById("confirmPassword").style.borderColor = "red";
+		document.getElementById("signupButton").disabled = true;
+	}else{
+		document.getElementById("passwordsMatch").innerHTML = "";
+		document.getElementById("newPassword").style.borderColor = "";
+		document.getElementById("confirmPassword").style.borderColor = "";
+		document.getElementById("signupButton").disabled = false;
+	}
+}
 
+function resetForm(){
+	document.getElementById("submitForm").reset();
+    document.getElementById("signupForm").reset();
+}
 
 function openCity(evt, cityName) {
 		
@@ -21,9 +41,13 @@ function openCity(evt, cityName) {
     }
 
     // Show the current tab, and add an "active" class to the button that opened the tab
+   
+    
     document.getElementById(cityName).style.display = "block";
     evt.currentTarget.className += " active";
 }
+
+
 
 
 

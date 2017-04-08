@@ -3,6 +3,7 @@ package com.wood.website;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.sql.*;
 import java.text.DateFormat;
 import java.util.Date;
@@ -19,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -146,12 +148,15 @@ public class HomeController {
 	public String submit(Model model, @ModelAttribute("loginBean") LoginBean loginBean, HttpServletResponse response, HttpServletRequest request){
 //		logger.info(loginBean.getUserName());
 //		logger.info(loginBean.getPassword());
+		String un = loginBean.getUserName();
+		String pw = loginBean.getPassword();
 		if(loginBean.getUserName() == "" || loginBean.getUserName() == " " || loginBean.getPassword() == "" || loginBean.getPassword() == " "){
 			model.addAttribute("error", "Please Enter Details");
 			return "login";
 		}else{
-			if (loginBean != null && loginBean.getUserName() != null && loginBean.getPassword() != null) {
-				if (loginBean.getUserName().equals("test1") && loginBean.getPassword().equals("test1")) {
+			if (checkDBForAccount(un)) {
+				pw = encryptUserPassword(pw);
+				if(checkDBForCorrectPassword(un, pw)){
 					//model.addAttribute("message",  "Welcome, " + loginBean.getUserName()+ ". ") ;
 					//((HttpServletRequest) request).getSession().setAttribute("loggedInUser", loginBean.getUserName());
 					HttpSession session = request.getSession();
@@ -169,66 +174,172 @@ public class HomeController {
 					}
 					//String greetings = "Welcome to Samples, " + temp + "! ";
 				    model.addAttribute("message", "Welcome to Samples, " + temp + "! ");
-	//				return "redirect:samples";	
+//					return "redirect:samples";	
 					return "samples";
-				} else {
-					model.addAttribute("error", "Invalid Details");
-					return "login";
-				}
+				}	
+				model.addAttribute("error", "Invalid Password");
+				return "login";
 			} else {
-				model.addAttribute("error", "Please Enter Details");
+				model.addAttribute("error", "Invalid Email");
 				return "login";
 			}
-		}
+		} 			
 	}
+	
 	@RequestMapping(method = RequestMethod.POST, params = "signup")	
 	public String signup(Model model, @ModelAttribute("loginBean") LoginBean loginBean, HttpServletResponse response, HttpServletRequest request){
 		if(loginBean.getUserName() == "" || loginBean.getUserName() == " " || loginBean.getPassword() == "" || loginBean.getPassword() == " "){
 			model.addAttribute("error", "Please Enter Details");
 			return "login";	
 		}else{
-			//model.addAttribute("error", "Unfortunately, sign up is currently disabled.");
-			String greeting= "";
-			String apos = "'";
-			String un = apos + loginBean.getUserName() + apos;
-			//Apos is just prep for SQL statement
-			String pw = loginBean.getPassword();
-			try{  
-				//Class.forName("com.mysql.jdbc.Driver");
-				Class.forName("com.mysql.cj.jdbc.Driver"); 
-				Connection con=DriverManager.getConnection(  
-				"jdbc:mysql://localhost:3306/users","root","root");  
-				//here users is database name, root is username and password  
-				Statement stmt=con.createStatement(); 			
-				ResultSet rs=stmt.executeQuery("SELECT Password FROM User WHERE Username=("+un+")");			
-				while(rs.next()) { 
-					System.out.println(rs.getString(1));
-					if(pw.equals(rs.getString(1))){
-						greeting =  "Good Username/Password!";
-					}else{
-						greeting =  "Bad Username/Password!";
-					}
+			if(!(checkDBForAccount(loginBean.getUserName()))){				
+					if(checkPasswordMeetsPolicy(loginBean.getPassword())){
+					String greeting= "";
+					String un = loginBean.getUserName();
+					String pw = loginBean.getPassword();
+					pw = encryptUserPassword(pw);
+					
+					//TODO: Write insert statement for new account 
+					model.addAttribute("message", "Please sign in to verify credentials.");
+					addUser(un, pw);
+					return "login";
+				}else{
+					model.addAttribute("error", "Password does meet minimum requirements.");
+					return "login";
 				}
-					con.close();  
-				}catch(Exception e){ 
-					System.out.println(e);
-				
-				}				
-
-			MessageDigest messageDigest;
-			try {
-				messageDigest = MessageDigest.getInstance("SHA-256");
-				messageDigest.update(pw.getBytes());
-				String encryptedPW = new String(messageDigest.digest());
-				pw = encryptedPW;
-			} catch (NoSuchAlgorithmException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			}else{				
+				model.addAttribute("error", "Email already exists. Please use another email, or reset password if password has been forgotten.");
+				return "login";
 			}
-			
-			model.addAttribute("table", pw);
-			return "login";	
 		}
+	}	
+	
+
+	private void addUser(String un, String pw) {
+		// TODO Auto-generated method stub
+		String greeting = "";
+		String apos = "'";
+		String tempUN = apos + un + apos;
+		pw = apos + pw + apos;
+		try{  
+			//Class.forName("com.mysql.jdbc.Driver"); Deprecated
+			Class.forName("com.mysql.cj.jdbc.Driver"); 
+			Connection con=DriverManager.getConnection(  
+			"jdbc:mysql://localhost:3306/users","root","root");  
+			//here users is database name, root is username and password  
+			Statement stmt=con.createStatement(); 			
+			stmt.executeUpdate
+					("INSERT INTO User (Email,Password) VALUES (" + tempUN + ", " + pw + ")");			
+			
+			con.close();  
+			}catch(Exception e){ 
+				System.out.println(e);			
+			}
+		tempUN = "";
+		
+	}
+
+	private boolean checkPasswordMeetsPolicy(String pw){		
+		String pattern = "^([a-zA-Z0-9!@#$%^&*]{8,20})$";
+		if(pw.matches(pattern)){
+			return true;
+		}else{
+			return false;
+		}
+		
+	}
+
+	private boolean checkDBForAccount(String un) {
+		boolean accountExists = false;
+		//String apos is used for prepared SQL statement
+		String greeting = "";
+		String apos = "'";
+		String tempUN = apos + un + apos;
+		try{  
+			//Class.forName("com.mysql.jdbc.Driver"); Deprecated
+			Class.forName("com.mysql.cj.jdbc.Driver"); 
+			Connection con=DriverManager.getConnection(  
+			"jdbc:mysql://localhost:3306/users","root","root");  
+			//here users is database name, root is username and password  
+			Statement stmt=con.createStatement(); 			
+			ResultSet rs=stmt.executeQuery("SELECT Email FROM User WHERE Email=("+tempUN+")");			
+			while(rs.next()) { 				
+				if(un.equals(rs.getString(1))){
+					System.out.println(rs.getString(1));
+					accountExists = true;
+				}else{
+					accountExists = false;
+				}
+			}
+				con.close();  
+			}catch(Exception e){ 
+				System.out.println(e);
+			
+			}
+		tempUN = "";
+		return accountExists;
+	}
+	
+	private boolean checkDBForCorrectPassword(String un, String pw){
+		boolean correctPassword = false;
+		//String apos is used for prepared SQL statementString apos = "'";
+		String apos = "'";
+		un = apos + un + apos;
+		String greeting = "";
+		try{  
+			//Class.forName("com.mysql.jdbc.Driver");
+			Class.forName("com.mysql.cj.jdbc.Driver"); 
+			Connection con=DriverManager.getConnection(  
+			"jdbc:mysql://localhost:3306/users","root","root");  
+			//here users is database name, root is username and password  
+			Statement stmt=con.createStatement(); 			
+			ResultSet rs=stmt.executeQuery("SELECT Password FROM User WHERE Email=("+un+")");			
+			while(rs.next()) { 
+				System.out.println(rs.getString(1));
+				if(pw.equals(rs.getString(1))){
+					greeting =  "Good Username/Password!";
+					correctPassword = true;
+				}else{
+					greeting =  "Bad Username/Password!";
+					correctPassword = false;
+				}
+			}
+				con.close();  
+			}catch(Exception e){ 
+				System.out.println(e);
+			
+			}
+		return correctPassword;
+	}
+	
+	private String encryptUserPassword(String pw){
+		
+		String passwordToHash = pw;
+        String generatedPassword = null;
+        try {
+            // Create MessageDigest instance for MD5
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            //Add password bytes to digest
+            md.update(passwordToHash.getBytes());
+            //Get the hash's bytes 
+            byte[] bytes = md.digest();
+            //This bytes[] has bytes in decimal format;
+            //Convert it to hexadecimal format
+            StringBuilder sb = new StringBuilder();
+            for(int i=0; i< bytes.length ;i++)
+            {
+                sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
+            }
+            //Get complete hashed password in hex format
+            generatedPassword = sb.toString();
+        } 
+        catch (NoSuchAlgorithmException e) 
+        {
+            e.printStackTrace();
+        }
+        System.out.println(generatedPassword);
+   
+		return generatedPassword;
 	}
 	
 //	private void setCookie(HttpServletResponse response, String sessionID) {

@@ -35,6 +35,7 @@ ${message}
                     <td><input type="submit" value="Submit" name="submit"/> <button type="reset" value="Reset" id="resetLogin">Reset</button></td>
                 </tr>
             </table>
+            <div id="forgotPasswordLink" ><a href="requestPasswordReset" >Forgot Password?</a></div>
             <div style="color: red">${error}</div>
         </div>
    </form:form>
@@ -60,9 +61,10 @@ ${message}
                 </tr>
                 <tr>
                     <td></td>
-                    <td><input id="signupButton" type="submit" value="Submit" name="signup"/> <button type="reset" value="Reset" id="resetSignup">Reset</button></td>
+                    <td><input id="submitButton" type="submit" value="Submit" name="signup"/> <button type="reset" value="Reset" id="resetSignup">Reset</button></td>
                 </tr>
             </table>
+            
             <p id="passwordsMatch"></p>
             <div style="color: red">${error}</div>
         </div>

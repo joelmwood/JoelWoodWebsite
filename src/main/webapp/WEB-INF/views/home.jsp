@@ -13,7 +13,7 @@
         <p>I&#39m an aspiring coder/developer who loves everything about Java and related technologies. I&#39ve lived in lots of different places and have worked in lots of different jobs. I'm excited to bring my life experience to the process of building fantastic looking applications and websites.</p>
         <p>I've been a life-long learner who&#39s always interested in expanding my skills.</p>
         <ul>
-          <li>To learn more, <a href="/experience">view my resume.</a></li>
+          <li>To learn more, <a href="experience">view my resume.</a></li>
         </ul>
         <h3>A New Subsection, Coming Soon!</h3>
       </div> 

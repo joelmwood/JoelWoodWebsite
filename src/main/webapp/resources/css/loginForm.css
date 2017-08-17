@@ -39,3 +39,9 @@ div.tab button.active {
     border: 1px solid #ccc;
     border-top: none;
 }
+
+#forgotPasswordLink{
+	float: right;
+	margin-top:0;
+	font-size: 12px; 
+}

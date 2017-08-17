@@ -9,12 +9,12 @@ function checkPasswordsMatch(){
 		document.getElementById("passwordsMatch").innerHTML = "Passwords do not Match.";
 		document.getElementById("newPassword").style.borderColor = "red";
 		document.getElementById("confirmPassword").style.borderColor = "red";
-		document.getElementById("signupButton").disabled = true;
+		document.getElementById("submitButton").disabled = true;
 	}else{
 		document.getElementById("passwordsMatch").innerHTML = "";
 		document.getElementById("newPassword").style.borderColor = "";
 		document.getElementById("confirmPassword").style.borderColor = "";
-		document.getElementById("signupButton").disabled = false;
+		document.getElementById("submitButton").disabled = false;
 	}
 }
 
